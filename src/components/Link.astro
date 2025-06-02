@@ -1,0 +1,17 @@
+---
+// components/Link.astro
+const { href, ...attrs } = Astro.props;
+
+// Получаем базовый URL из конфига Astro
+const base = import.meta.env.BASE_URL;
+
+// Нормализуем URL (убираем дублирующие слэши)
+const normalizeUrl = (url) => url.replace(/([^:]\/)\/+/g, "$1");
+
+// Формируем итоговый путь
+const resolvedHref = href.startsWith("http") ? href : normalizeUrl(`${base}${href}`.replace(/\/$/, ""));
+---
+
+<a href={resolvedHref} {...attrs}>
+    <slot />
+</a>
