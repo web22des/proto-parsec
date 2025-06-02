@@ -2,14 +2,27 @@
 // components/Link.astro
 const { href, ...attrs } = Astro.props;
 
-// Получаем базовый URL из конфига Astro
+// Получаем настройки из конфига
 const base = import.meta.env.BASE_URL;
+const trailingSlash = Astro.config.trailingSlash;
 
-// Нормализуем URL (убираем дублирующие слэши)
-const normalizeUrl = (url) => url.replace(/([^:]\/)\/+/g, "$1");
+// Нормализация URL с учетом trailingSlash
+const normalizeUrl = (url) => {
+    // Удаляем дублирующие слэши
+    let normalized = url.replace(/([^:]\/)\/+/g, "$1");
+
+    // Добавляем trailing slash если нужно
+    if (trailingSlash === "always" && !normalized.endsWith("/") && !normalized.includes("#")) {
+        normalized += "/";
+    } else if (trailingSlash === "never" && normalized.endsWith("/")) {
+        normalized = normalized.slice(0, -1);
+    }
+
+    return normalized;
+};
 
 // Формируем итоговый путь
-const resolvedHref = href.startsWith("http") ? href : normalizeUrl(`${base}${href}`.replace(/\/$/, ""));
+const resolvedHref = href.startsWith("http") ? href : normalizeUrl(`${base}${href}`);
 ---
 
 <a href={resolvedHref} {...attrs}>
