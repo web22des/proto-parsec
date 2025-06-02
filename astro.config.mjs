@@ -1,6 +1,5 @@
 // config/astro/astro.config.mjs
 import { defineConfig } from "astro/config";
-import viteConfig from "./vite.config.js";
 
 const isDev = process.env.NODE_ENV === "development";
 const isPreview = process.argv.includes("preview");
@@ -11,5 +10,4 @@ export default defineConfig({
     base: isDev || isPreview || !isGHPages ? "/" : "/proto-parsec/",
     trailingSlash: "always",
     output: "static", // Явно указываем статический режим
-    vite: viteConfig,
 });
